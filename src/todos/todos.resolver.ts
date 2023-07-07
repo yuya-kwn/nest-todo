@@ -1,19 +1,24 @@
 import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Todo } from "./models/todo.model";
+import { TodoModel } from "./models/todo.model";
 import { PrismaService } from "src/prisma.service";
+import { SortTodoArgs } from "./dtos/sort-todo.args";
 
-@Resolver(() => Todo)
+@Resolver(() => TodoModel)
 export class TodoResolver {
     constructor(private prisma: PrismaService) {}
 
     // 一覧を取得
-    @Query(() => [Todo])
+    @Query(() => [TodoModel])
     async getTodoList() {
-        return this.prisma.todo.findMany();
+        return this.prisma.todo.findMany({
+            orderBy: {
+                order: 'asc'
+            }
+        });
     }
 
     // 特定のレコードの取得
-    @Query(() => Todo)
+    @Query(() => TodoModel)
     async getTodo(
         @Args('id') id: number,
     ) {
@@ -21,7 +26,7 @@ export class TodoResolver {
     }
 
     // 部分一致するレコードの取得
-    @Query(() => [Todo])
+    @Mutation(() => [TodoModel])
     async getFilteredTodo(
         @Args('content') content: string,
     ) {
@@ -35,23 +40,31 @@ export class TodoResolver {
     }
 
     // 指定した並びでレコードの取得
-    @Query(() => [Todo])
+    @Query(() => [TodoModel])
     async sortTodo(
-        @Args('ids', { type: () => [Number]}) ids: number[]) {
-       const todos = await this.prisma.todo.findMany({
-        where: { id: { in: ids } },
-        orderBy: { id: 'asc' },
-       });
+         @Args() args: SortTodoArgs) {
+       const queries = args.ids.map((id, index) => {
+        return this.prisma.todo.update({
+            where: {
+                id,
+            },
+            data: {
+                order: index,
+            }
+          })
+       })
 
-       const sortedTodos = ids.map(id =>
-        todos.find(todo => todo.id === id)
-       );
+       await Promise.all(queries);
 
-       return sortedTodos;
+       return this.prisma.todo.findMany({
+        orderBy: {
+            order: 'asc'
+        }
+       })
     }
 
     // レコード作成
-    @Mutation(() => Todo)
+    @Mutation(() => TodoModel)
     async createTodo(
         @Args('content') content: string,
         @Args('dueDate') dueDate: string,
@@ -60,7 +73,7 @@ export class TodoResolver {
     }
 
     // レコードの更新
-    @Mutation(() => Todo)
+    @Mutation(() => TodoModel)
     async updateTodo(
         @Args('id') id: number,
         @Args('content') content: string,
@@ -73,7 +86,7 @@ export class TodoResolver {
     }
 
     // レコードの削除
-    @Mutation(() => Todo)
+    @Mutation(() => TodoModel)
     async deleteTodo(
         @Args('id') id: number,
     ) {
