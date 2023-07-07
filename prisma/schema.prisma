@@ -12,6 +12,7 @@ datasource db {
 
 model Todo {
   id    Int     @default(autoincrement()) @id
+  order Int?
   content String
   dueDate String
 }

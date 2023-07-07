@@ -2,21 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Todo {
+type TodoModel {
   id: ID!
+  order: Int
   content: String!
   dueDate: String!
 }
 
 type Query {
-  getTodoList: [Todo!]!
-  getTodo(id: Float!): Todo!
-  getFilteredTodo(content: String!): [Todo!]!
-  sortTodo(ids: [Float!]!): [Todo!]!
+  getTodoList: [TodoModel!]!
+  getTodo(id: Float!): TodoModel!
+  getFilteredTodo(content: String!): [TodoModel!]!
+  sortTodo(ids: [Int!]!): [TodoModel!]!
 }
 
 type Mutation {
-  createTodo(content: String!, dueDate: String!): Todo!
-  updateTodo(id: Float!, content: String!, dueDate: String!): Todo!
-  deleteTodo(id: Float!): Todo!
+  createTodo(content: String!, dueDate: String!): TodoModel!
+  updateTodo(id: Float!, content: String!, dueDate: String!): TodoModel!
+  deleteTodo(id: Float!): TodoModel!
 }
