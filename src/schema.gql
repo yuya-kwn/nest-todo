@@ -12,11 +12,11 @@ type TodoModel {
 type Query {
   getTodoList: [TodoModel!]!
   getTodo(id: Float!): TodoModel!
-  getFilteredTodo(content: String!): [TodoModel!]!
   sortTodo(ids: [Int!]!): [TodoModel!]!
 }
 
 type Mutation {
+  getFilteredTodo(content: String!): [TodoModel!]!
   createTodo(content: String!, dueDate: String!): TodoModel!
   updateTodo(id: Float!, content: String!, dueDate: String!): TodoModel!
   deleteTodo(id: Float!): TodoModel!
