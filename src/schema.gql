@@ -1,0 +1,22 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Todo {
+  id: ID!
+  content: String!
+  dueDate: String!
+}
+
+type Query {
+  getTodoList: [Todo!]!
+  getTodo(id: Float!): Todo!
+  getFilteredTodo(content: String!): [Todo!]!
+  sortTodo(ids: [Float!]!): [Todo!]!
+}
+
+type Mutation {
+  createTodo(content: String!, dueDate: String!): Todo!
+  updateTodo(id: Float!, content: String!, dueDate: String!): Todo!
+  deleteTodo(id: Float!): Todo!
+}
